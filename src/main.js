@@ -18,13 +18,15 @@ const handlerTemplate = `exports.handler = async () => {
   }
 };`;
 
-const handlerSpecTemplate = `const subject = require("../main/Handler");
+const handlerSpecTemplate = (handlerName) => {
+ return  `const subject = require("../main/${handlerName}");
 describe("subject.test ", () => {
     it("returns Implementation details", async () => {
         const response = await subject.handler();
         expect(response).toBe("Implementation for Handler");
     });
 }); `;
+}
 
 async function copyTemplateFiles(options) {
   copy(options.templateDirectory, options.targetDirectory, {
@@ -44,7 +46,7 @@ async function copyTemplateFiles(options) {
   }
 
   if (exist(handlerSpecDirectory)) {
-    writeFile(handlerSpecDirectory, `${options.handlerName}.spec.ts`, handlerSpecTemplate);
+    writeFile(handlerSpecDirectory, `${options.handlerName}.spec.ts`, handlerSpecTemplate(options.handlerName));
   }
 
   return;
