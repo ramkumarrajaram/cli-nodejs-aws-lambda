@@ -16,7 +16,7 @@ async function copyTemplateFiles(options) {
     clobber: false,
   });
 
-  createFiles(options);
+  await createFiles(options);
 
   return;
 }
