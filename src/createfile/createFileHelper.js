@@ -8,8 +8,8 @@ export function writeFile(fileDirectory, fileName, template) {
     console.log(chalk.green("File -> " + pathToFile, "Creation Successfully"));
 }
 
-export function createDirectory(options, dirPath) {
-    fs.mkdirSync(options.targetDirectory + dirPath, { recursive: true }, (error) => {
+export function createDirectory(dirPath) {
+    fs.mkdirSync(dirPath, { recursive: true }, (error) => {
         if (error) {
             console.log(error);
         } else {
