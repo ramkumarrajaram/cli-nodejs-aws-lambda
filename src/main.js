@@ -5,7 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import execa from 'execa';
 import Listr from 'listr';
-import { projectInstall } from 'pkg-install';
+import { projectInstall, install } from 'pkg-install';
 import { createFiles } from './createfile/createFiles';
 
 const access = promisify(fs.access);
@@ -66,14 +66,33 @@ export async function createProject(options) {
     {
       title: 'Install dependencies',
       task: () =>
-        projectInstall({
-          cwd: options.targetDirectory,
-        }),
+        install(
+          options.dependencies.trim().split(" "),
+          {
+            dev: false,
+            prefer: 'npm',
+          }
+        ),
       skip: () =>
-        !options.runInstall
-          ? 'Pass --install to automatically install dependencies'
-          : undefined,
+        !options.dependencies
+          ? 'Skipped installing dependencies'
+          : "",
     },
+    {
+      title: 'Install dev dependencies',
+      task: () =>
+        install(
+          options.devDependencies.trim().split(" "),
+          {
+            dev: true,
+            prefer: 'npm',
+          }
+        ),
+      skip: () =>
+        !options.devDependencies
+          ? 'Skipped installing dev dependencies'
+          : "",
+    }
   ]);
 
   await tasks.run();

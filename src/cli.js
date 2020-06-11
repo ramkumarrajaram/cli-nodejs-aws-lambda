@@ -2,15 +2,13 @@ import arg from 'arg';
 import inquirer from 'inquirer';
 import { createProject } from './main';
 
-function parseArgumentsIntoOptions(rawArgs) {
+const parseArgumentsIntoOptions = (rawArgs) => {
         const args = arg(
             {
                 '--git': Boolean,
                 '--yes': Boolean,
-                '--install': Boolean,
                 '-g': '--git',
                 '-y': '--yes',
-                '-i': '--install',
             },
             {
                 argv: rawArgs.slice(2),
@@ -20,13 +18,14 @@ function parseArgumentsIntoOptions(rawArgs) {
             skipPrompts: args['--yes'] || false,
             git: args['--git'] || false,
             template: args._[0],
-            runInstall: args['--install'] || false,
+            dependencies: '',
+            devDependencies: '',
             handlerName: 'Handler',
         };
     }
 
-async function promptForMissingOptions(options) {
-    const defaultTemplate = 'JavaScript';
+ const promptForMissingOptions = async (options) => {
+    const defaultTemplate = 'TypeScript';
     if (options.skipPrompts) {
         return {
             ...options,
@@ -63,12 +62,21 @@ async function promptForMissingOptions(options) {
         });
     }
 
-    if (!options.runInstall) {
+    if (!options.dependencies) {
         questions.push({
-            type: 'confirm',
-            name: 'runInstall',
-            message: 'Do you want to install the project?',
-            default: false,
+            type: 'input',
+            name: 'dependencies',
+            message: 'Specify the dependencies you wish to install with spaces. If you do not wish to specify hit "Enter": ',
+            default: "",
+        });
+    }
+
+    if (!options.devDependencies) {
+        questions.push({
+            type: 'input',
+            name: 'devDependencies',
+            message: 'Specify the dev dependencies you wish to install with spaces. If you do not wish to specify hit "Enter": ',
+            default: "",
         });
     }
 
@@ -77,7 +85,8 @@ async function promptForMissingOptions(options) {
         ...options,
         template: options.template || answers.template,
         git: options.git || answers.git,
-        runInstall: options.runInstall || answers.runInstall,
+        dependencies: answers.dependencies || '',
+        devDependencies: answers.devDependencies || '',
         handlerName: answers.handlerName || 'Handler'
     };
 }
@@ -86,5 +95,4 @@ export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
     options = await promptForMissingOptions(options);
     await createProject(options);
-    console.log(options);
 }
