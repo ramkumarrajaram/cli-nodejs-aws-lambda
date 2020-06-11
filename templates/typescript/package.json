@@ -1,10 +1,9 @@
 {
-  "name": "orbflightsearch",
+  "name": "nodeproject",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-silent": "jest --collectCoverage=false --reporters jest-silent-reporter",
     "test": "jest --clearCache && jest",
     "clean": "rm -rf coverage dist",
     "build": "npm run clean && tsc && echo 'Build Success'"

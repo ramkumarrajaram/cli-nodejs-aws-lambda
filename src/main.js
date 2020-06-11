@@ -5,7 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import execa from 'execa';
 import Listr from 'listr';
-import { projectInstall, install } from 'pkg-install';
+import { install } from 'pkg-install';
 import { createFiles } from './createfile/createFiles';
 
 const access = promisify(fs.access);
